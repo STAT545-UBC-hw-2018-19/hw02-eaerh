@@ -215,4 +215,4 @@ plot(fit, 2)
 
 **Conclusion**
 
-I have looked further into the \texit{gapminder} data set and investigated (lightly) how life expectancy has varied throughout the years etc. 
+I have looked further into the \texit{gapminder} data set and investigated (lightly) how different varaibles affect each other. 
