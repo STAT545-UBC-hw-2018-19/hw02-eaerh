@@ -1,0 +1,218 @@
+---
+title: "Homework assignment 2"
+output: github_document
+---
+
+This assignment is about exploring the $\textit{gapminder} data set, using built in functions to extract information and generate plots. 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo = FALSE}
+library(gapminder)
+library(tidyverse)
+library(ggplot2)
+
+```
+
+**Smell the test data**
+
+- The gapminder data set is a:
+```{r}
+typeof(gapminder)
+```
+
+- With class:
+```{r}
+class(gapminder)
+```
+
+- Number of rows and columns:
+```{r}
+nrow(gapminder)
+ncol(gapminder)
+```
+
+- These facts could also be extracted using e.g. 
+
+```{r}
+?gapminder
+```
+which displays general information about the data set, or:
+
+```{r}
+glimpse(gapminder)
+```
+
+
+- Each variable is of datatype:
+```{r}
+class(gapminder$country)
+class(gapminder$continent)
+class(gapminder$lifeExp)
+class(gapminder$pop)
+class(gapminder$year)
+class(gapminder$gdpPercap)
+
+#can also use lapply function, i.e. lapply(gapminder,class)
+```
+
+**Explore individual variables**
+
+Looking further into the $\texttt{pop}$, $\texttt{lifeExp}$,  and the $\texttt{continent}$ variables.
+
+- population:
+
+
+```{r}
+#showing highest and lowest values of variable:
+range(gapminder$pop)
+#or
+summary(gapminder$pop)
+
+```
+This shows some basic facts about the data in the population column. 
+
+
+The distribution can be seen from the following histogram:
+```{r}
+gapminder %>%  
+  ggplot(aes(x = pop, y = ..density..)) + 
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept = exp(mean(log(gapminder$pop)))) +
+  scale_x_log10() +
+  ggtitle("Histogram of the log population")
+      
+
+```
+
+Added mean line to illustrate. 
+
+We can check wheter the distribution is normal by looking at the residuals in a qq-plot:
+```{r}
+
+
+fit = lm(gapminder$lifeExp~gapminder$year)
+ggplot(gapminder, aes(sample = resid(fit))) +
+  stat_qq() +
+  stat_qq_line()
+
+```
+
+We observe that the distribution residuals not really are on line, which may indicate that the distribution is not normal. 
+
+
+Would also be nice to see the most populated countries in, say, 1957. Below we see the top 3:
+
+
+```{r}
+picked_year <- gapminder %>%  
+  select(country, pop, year) %>% 
+  filter(year == 1957) 
+
+
+
+max_year <- picked_year %>% 
+  filter(pop >= sort(pop, decreasing=TRUE)[3])
+
+
+max_year
+
+
+```
+
+- continent:
+
+
+
+We can summarize the number of observations per continent:
+```{r}
+table(gapminder$continent)
+
+  
+```
+This shows that Africa has the largest number of observations with 624, while Oceania has the lowest with 24.
+
+
+- life expectancy
+
+We can display the $\texttt{lifeExp}$ distribution by making a density plot:
+```{r}
+gapminder %>% 
+  ggplot(aes(lifeExp)) +
+  geom_density()
+```
+
+
+**Explore various plot types**
+
+
+Some plots of the different variables:
+  
+  - a scatter plot between two quantitative variables, $\texttt{population}$ and $\texttt{continent}$, focusing on Europe.
+```{r}
+lifeExp = gapminder$lifeExp
+year = gapminder$year
+pop = gapminder$pop
+continent = gapminder$continent
+
+gapminder %>% 
+  filter(continent == "Europe") %>% 
+  ggplot(aes(continent, pop)) +
+  geom_jitter() #+ scale_y_log10()
+
+
+```
+
+- It would be interesting to see how the life expectancy varies with every continent. Let us plot the density showing the differences in life expectancy in the different continents:
+
+```{r}
+
+gapminder %>%
+  ggplot(aes(x = lifeExp, y = ..density..)) +
+  geom_density(fill = 'blue', alpha = 0.5) +
+  facet_grid(~continent)  +
+  theme_bw() +
+  ggtitle("Density plot of Life Expectancy")
+```
+
+- Would also be interesting to see how life expectancy in Norway has changed throughout the years:
+
+```{r}
+gapminder %>% 
+  filter(country == 'Norway') %>% 
+  ggplot(aes(year, lifeExp)) + 
+  geom_line()
+
+
+```
+
+Interesting to see how the life expectancy has increased rapidly from the mid 80's and to today. Increased welfare programs, higher education, better jobs and a higher standard of living may be reasons for this. 
+
+Let us quickly investigate whether there is a connection between higher GDP and life expectancy:
+
+```{r}
+gapminder %>% 
+  filter(country == "Norway") %>% 
+  ggplot(aes(log(gdpPercap), lifeExp)) +
+  geom_line()
+
+```
+
+Looks like there is a certain connenction here.
+
+
+Looking at a QQ-plot of a fitted model with \texttt{lifeExp} and \textit{gdpPercap}, we also see that there might be a connenction between the two.
+```{r}
+fit = lm(gapminder$lifeExp~gapminder$gdpPercap)
+summary(fit)
+plot(fit, 2)
+```
+
+
+
+
+**Conclusion**
+
+I have looked further into the \texit{gapminder} data set and investigated (lightly) how life expectancy has varied throughout the years etc. 
