@@ -43,8 +43,10 @@ which displays general information about the data set, or:
 
 ```{r}
 glimpse(gapminder)
+#or
+#summary(gapminder)
 ```
-
+These functions are really nice to display general information about the data set.
 
 - Each variable is of datatype:
 ```{r}
@@ -211,7 +213,16 @@ plot(fit, 2)
 ```
 
 
+**But I want to do more!**
 
+It seems like some of the data is missing. Instead of the provided code, we could try something like:
+
+```{r}
+gapminder %>%
+  filter(country == "Rwanda" | country == "Afghanistan") %>%
+  knitr::kable()
+```
+Now we see that the data is restored. 
 
 **Conclusion**
 
