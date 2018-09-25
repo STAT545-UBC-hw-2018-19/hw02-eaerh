@@ -1,0 +1,8 @@
+A short reflection upon Assignment 2 in STAT 545A:
+
+
+The assignment was nice as an introduction to more of the built in functions in R, as well as training on how to use ggplot. 
+Worked through local directories and pushing all the files to GitHub eventually. 
+
+Nice to get more training and hands on using crucial plotting functions in R, which will probably be really helpful later on. 
+
